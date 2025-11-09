@@ -45,37 +45,49 @@ Abrir el proyecto en Android Studio y clonar el repositorio. Luego presionar el 
 
 app/src/main/java/com/example/cineplus/
 │
-├── data/ ← CAPA DE DATOS
+├── data/ 
 │ ├── remote/ 
+│ │ ├── dto/ 
+│ │ │ ├── LoginRequest.kt
+│ │ │ ├── LoginResponse.kt
+│ │ │ ├── RegisterRequest.kt
+│ │ │ └── RegisterResponse.kt
 │ │ ├── ApiService.kt 
-│ │ ├── RetrofitClient.kt
-│ │ └── dto/ 
-│ │ ├── LoginRequest.kt
-│ │ ├── LoginResponse.kt
-│ │ └── UserDto.kt
-│ └── DarkModeDataStore.kt
+│ │ ├── RetrofitClient.kt 
+│ │ └── DarkModeDataStore.kt 
+│ └── model/ 
+│
+├── navigation/ 
+│ ├── AppNavigation.kt 
+│ ├── NavigationEvent.kt
+│ └── Screen.kt 
 │
 ├── repository/ 
 │ └── AuthRepository.kt 
 │
 ├── ui/ 
-│ ├── navigation/ 
-│ │ ├── AppNavigation.kt
-│ │ └── Screen.kt
-│ └── screens/ 
-│ ├── LoginScreen.kt
-│ ├── RegisterScreen.kt
-│ ├── ResumenScreen.kt
-│ ├── HomeScreen.kt
-│ └── ProfileScreen.kt
+│ ├── screens/ 
+│ │ ├── HomeScreen.kt
+│ │ ├── ProfileScreen.kt
+│ │ ├── RegisterScreen.kt
+│ │ └── ResumenScreen.kt
+│ ├── state/
+│ │ └── UsuarioUiState.kt 
+│ ├── theme/
+│ │ ├── Color.kt
+│ │ ├── Theme.kt
+│ │ └── Type.kt
+│ └── utils/
+│ └── WindowSizeUtils.kt 
 │
 ├── viewmodel/ 
-│ ├── UsuarioViewModel.kt
-│ ├── RegisterViewModel.kt 
-│ └── DarkModeViewModel.kt
+│ ├── DarkModeViewModel.kt
+│ ├── LoginViewModel.kt
+│ ├── MainViewModel.kt
+│ ├── RegisterViewModel.kt
+│ └── UsuarioViewModel.kt
 │
-└── model/ 
-
+└── MainActivity.kt 
 
 
 ## 4. Funcionalidades
@@ -131,6 +143,15 @@ El flujo de usuario de esta app consiste en:
 4) Se le muestra un resumen con sus credenciales y finalmente puede acceder al catálogo de películas en el HomeScreen.
 5) El usuario, ya en el HomeScreen (catálogo de películas), puede ver qué películas están disponibles junto con su duración.
 
+
+
+## 7. Referencias
+Este punto no iba en la rúbrica, pero quise integrarlo. Aquí le anexo los sitios que usé de referencias y herramientas:
+1) OpenCompose
+2) Developer.Android
+3) YouTube para buscar tutoriales (canal de MoureDev entre otros)
+4) IA a modo de apoyo (Gemini integrado en Android Studio y ChatGPT para resolver dudas sobre sintaxis y sobre cómo integrar algunos componentes).
+5) AVA Blackboard para ver el material de estudio y seguir las guías que envió.
 
 
 
