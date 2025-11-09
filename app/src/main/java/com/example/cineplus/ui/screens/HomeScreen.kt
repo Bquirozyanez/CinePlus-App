@@ -1,27 +1,38 @@
 package com.example.cineplus.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cineplus.R
 import com.example.cineplus.viewmodel.DarkModeViewModel
@@ -40,6 +51,32 @@ fun HomeScreen(
 
     val isDarkModeState by darkModeViewModel.isDarkMode.collectAsState()
     val showMessage by darkModeViewModel.showMessage.collectAsState()
+
+    val context = LocalContext.current
+
+    var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
+
+    // launcher que abre la camara y devuelve una vista previa
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap ->
+        capturedImage = bitmap
+    }
+
+    // launcher para pedir permiso de cámara
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch(null)
+        } else {
+            Toast.makeText(
+                context,
+                "Se necesita el permiso de cámara para tomar fotos",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     if (isDarkModeState == null) {
         Box(
@@ -61,7 +98,6 @@ fun HomeScreen(
             androidx.compose.ui.graphics.Color(0xFFF5F5F7),
         label = "backgroundColor"
     )
-
 
     val cardColor by animateColorAsState(
         targetValue = if (isDarkMode)
@@ -101,6 +137,39 @@ fun HomeScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Text(
+                            text = "QR",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = if (isDarkMode)
+                                androidx.compose.ui.graphics.Color.White
+                            else
+                                androidx.compose.ui.graphics.Color(0xFF222222)
+                        )
+
+                        IconButton(
+                            onClick = {
+                                val hasPermission = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                ) == PackageManager.PERMISSION_GRANTED
+
+                                if (hasPermission) {
+                                    cameraLauncher.launch(null)
+                                } else {
+                                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.CameraAlt,
+                                contentDescription = "Abrir cámara"
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
                             text = if (isDarkMode) "🌙" else "☀️",
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (isDarkMode)
@@ -108,7 +177,9 @@ fun HomeScreen(
                             else
                                 androidx.compose.ui.graphics.Color(0xFF222222)
                         )
+
                         Spacer(modifier = Modifier.width(4.dp))
+
                         Switch(
                             checked = isDarkMode,
                             onCheckedChange = { darkModeViewModel.toggleDarkMode() }
@@ -166,7 +237,7 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Preferencia guardada ✅",
+                        text = "preferencia guardada",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -174,6 +245,19 @@ fun HomeScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Mostrar foto capturada (si existe)
+            capturedImage?.let { bitmap ->
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = "Foto capturada",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(bottom = 16.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -264,3 +348,4 @@ fun Cartelera(
 fun HomeScreenPreview() {
     HomeScreen()
 }
+

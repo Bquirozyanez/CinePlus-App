@@ -199,7 +199,7 @@ fun RegisterScreen(
                             when {
                                 isLoading -> CircularProgressIndicator(color = Color.White)
                                 isSuccess == true -> Text(
-                                    text = "Registro exitoso 🎉",
+                                    text = "Registro exitoso!",
                                     color = Color.White,
                                     fontWeight = FontWeight.Bold
                                 )
