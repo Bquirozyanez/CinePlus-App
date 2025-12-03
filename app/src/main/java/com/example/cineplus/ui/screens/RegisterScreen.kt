@@ -171,7 +171,7 @@ fun RegisterScreen(
                                 registerViewModel.register(
                                     email = estado.correo,
                                     password = estado.clave,
-                                    name = estado.nombre
+                                    nombre = estado.nombre
                                 )
                             }
                         },

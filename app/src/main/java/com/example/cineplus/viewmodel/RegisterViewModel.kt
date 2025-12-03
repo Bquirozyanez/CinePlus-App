@@ -35,13 +35,13 @@ class RegisterViewModel : ViewModel() {
      * Llama al repositorio para registrar un usuario con la API de Xano.
      * La UI debería llamar a esta función cuando el usuario presione "Registrarse".
      */
-    fun register(email: String, password: String, name: String?) {
+    fun register(email: String, password: String, nombre: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             _isSuccess.value = null
 
-            val result = repository.register(email, password, name)
+            val result = repository.register(email, password, nombre)
 
             result
                 .onSuccess { registerResponse ->
