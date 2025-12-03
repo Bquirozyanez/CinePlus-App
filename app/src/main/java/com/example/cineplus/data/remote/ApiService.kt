@@ -4,6 +4,7 @@ import com.example.cineplus.data.remote.dto.LoginRequest
 import com.example.cineplus.data.remote.dto.LoginResponse
 import com.example.cineplus.data.remote.dto.RegisterRequest
 import com.example.cineplus.data.remote.dto.RegisterResponse
+import com.example.cineplus.data.remote.dto.ProfileResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
