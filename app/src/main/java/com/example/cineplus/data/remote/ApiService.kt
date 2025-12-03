@@ -30,7 +30,7 @@ interface ApiService {
      * Endpoint de REGISTRO
      * Crea un nuevo usuario en el sistema y devuelve su token.
      */
-    @POST("auth/signup")
+    @POST("auth/register")
     suspend fun registerUser(
         @Body request: RegisterRequest
     ): RegisterResponse
@@ -40,8 +40,8 @@ interface ApiService {
      * Endpoint para obtener los datos del usuario actual.
      * Requiere el token en el header "Authorization".
      */
-    @GET("auth/me")
+    @GET("auth/profile")
     suspend fun getUserData(
         @Header("Authorization") token: String
-    ): RegisterResponse
+    ): ProfileResponse
 }

@@ -3,6 +3,7 @@ package com.example.cineplus.repository
 import com.example.cineplus.data.remote.RetrofitClient
 import com.example.cineplus.data.remote.dto.LoginRequest
 import com.example.cineplus.data.remote.dto.LoginResponse
+import com.example.cineplus.data.remote.dto.ProfileResponse
 import com.example.cineplus.data.remote.dto.RegisterRequest
 import com.example.cineplus.data.remote.dto.RegisterResponse
 
@@ -34,7 +35,7 @@ class AuthRepository {
     }
 
     // ====== OBTENER DATOS DEL USUARIO ======
-    suspend fun getUserData(token: String): Result<RegisterResponse> {
+    suspend fun getUserData(token: String): Result<ProfileResponse> {
         return try {
             val response = api.getUserData("Bearer $token")
             Result.success(response)

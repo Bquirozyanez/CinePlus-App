@@ -34,10 +34,11 @@ class LoginViewModel : ViewModel() {
 
             result
                 .onSuccess { loginResponse ->
-                    _authToken.value = loginResponse.authToken
-                    _isSuccess.value = !loginResponse.authToken.isNullOrEmpty()
-
-                    if (_isSuccess.value == false && !loginResponse.message.isNullOrBlank()) {
+                    if (loginResponse.success && loginResponse.data != null) {
+                        _authToken.value = loginResponse.data.access_token
+                        _isSuccess.value = true
+                    } else {
+                        _isSuccess.value = false
                         _error.value = loginResponse.message
                     }
                 }

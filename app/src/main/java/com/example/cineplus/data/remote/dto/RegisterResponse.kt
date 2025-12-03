@@ -2,9 +2,12 @@ package com.example.cineplus.data.remote.dto
 
 
 data class RegisterResponse(
-    val authToken: String?,   // token de autenticación que devuelve Xano
-    val id: Int?,             // id del usuario creado
-    val email: String?,       // correo del usuario
-    val name: String? = null, // nombre del usuario
-    val message: String? = null // mensaje informativo o de error
+    val success: Boolean,
+    val message: String,
+    val data: RegisterData?
+)
+
+data class RegisterData(
+    val access_token: String,
+    val user: UserData
 )

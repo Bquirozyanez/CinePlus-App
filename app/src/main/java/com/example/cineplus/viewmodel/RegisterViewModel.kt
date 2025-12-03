@@ -47,15 +47,11 @@ class RegisterViewModel : ViewModel() {
                 .onSuccess { registerResponse ->
                     _response.value = registerResponse
 
-                    // Si llego un token, se guarda en el estado
-                    _authToken.value = registerResponse.authToken
-
-                    //se marca exito si hubo token o id o al menos no vino error
-                    _isSuccess.value =
-                        !registerResponse.authToken.isNullOrEmpty() ||
-                                registerResponse.id != null
-
-                    if (_isSuccess.value == false && !registerResponse.message.isNullOrBlank()) {
+                    if (registerResponse.success && registerResponse.data != null) {
+                        _authToken.value = registerResponse.data.access_token
+                        _isSuccess.value = true
+                    } else {
+                        _isSuccess.value = false
                         _error.value = registerResponse.message
                     }
                 }
