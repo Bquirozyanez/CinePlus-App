@@ -49,7 +49,7 @@ Además, se realizaron tests unitarios sobre la lógica de validación de usuari
 
 1. Clonar el repositorio:
 2. Abrir el proyecto en Android Studio
-3. Presionar ▶ Run
+3. Presionar Run
 4. La app se conectará automáticamente al backend en Render (Este debe estar ejecutandose previamente en Render)
 
 
