@@ -163,7 +163,7 @@ Los errores se manejan desde Retrofit con .isSuccessful y códigos 400–500.
 
 ## 6. User flows
 
-1.Usuario abre la app
+1. Usuario abre la app
 2. Ve pantalla de Login
 3. Si no tiene cuenta → va a Registro
 4. Ingreso de datos → aparece Resumen
