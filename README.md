@@ -24,14 +24,14 @@ En esta entrega trabajamos principalmente en el diseño de las pantallas princip
 - Cartelera (HomeScreen)
 
 Funcionalidades principales desarrolladas:
-✔ Navegación entre pantallas con Navigation Compose
-✔ Registro de usuario → conectado a API propia (NestJS + Render)
-✔ Inicio de sesión real (JWT, validaciones, errores HTTP)
-✔ Resumen de datos ingresados
-✔ Listado de películas en Home
-✔ Modo oscuro persistente con DataStore
-✔ Cámara con QR Scanner
-✔ Se comenzó la implementación del mapa (pero no se alcanzó a finalizar)
+- ✔ Navegación entre pantallas con Navigation Compose
+- ✔ Registro de usuario → conectado a API propia (NestJS + Render)
+- ✔ Inicio de sesión real (JWT, validaciones, errores HTTP)
+- ✔ Resumen de datos ingresados
+- ✔ Listado de películas en Home
+- ✔ Modo oscuro persistente con DataStore
+- ✔ Cámara con QR Scanner
+- ✔ Se comenzó la implementación del mapa (pero no se alcanzó a finalizar)
 
 Además, se realizaron tests unitarios sobre la lógica de validación de usuario y ViewModels para cumplir con la rúbrica.
 
