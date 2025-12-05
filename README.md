@@ -1,10 +1,16 @@
-## Nota importante profesor: 
-Hola profe, este README fue agregado más tarde de la hora de entrega. Hice el README correcto a las 23:58 aproximadamente y este es uno actualizado 
-(cualquier cosa, tengo un video donde grabé el README de las 23:58 por cualquier cosa). No quería que el README me bajara mucho puntaje porque, si bien lo realicé,
-fue un README hecho un poco a la rápida y que siento que no le hace honor al trabajo. Espero que pueda dejármelo pasar por esta vez y ser piadoso jajaja.
-Este README solo quise que quedara más bonito y “mejor” explicado. Espero pueda comprender la situación y para ser honesto dejo este mensaje al principio del READ.ME.
-
 # Caso elegido: Proyecto CinePlus
+
+Este proyecto corresponde al desarrollo de una app móvil creada en Android Studio (Kotlin + Jetpack Compose) que permite:
+- Registrar usuarios
+- Iniciar sesión
+- Visualizar un resumen
+- Mostrar una cartelera de películas
+- Usar cámara (QR)
+- Implementar modo oscuro
+- Conectarse a un backend real alojado en Render
+
+Durante el desarrollo experimentamos una evolución importante: pasamos de usar Xano a un backend NestJS, desplegado en Render.
+La app quedó totalmente conectada a una API real, con requests POST/GET funcionando, validaciones completas y un flujo de navegación sólido.
 
 
 
@@ -17,19 +23,35 @@ En esta entrega trabajamos principalmente en el diseño de las pantallas princip
 - Resumen (ResumenScreen)
 - Cartelera (HomeScreen)
 
-Trabajamos la navegación entre pantallas partiendo desde el Login. El registro de usuarios con validaciones y conexión a un backend externo (Xano, que se encontraba en el Anexo A).
-Inicio de sesión conectado a este backend. La pantalla de Resumen muestra los datos ingresados antes de ir a la cartelera. Una cartelera con películas con la integración de un modo oscuro y los siguientes recursos nativos:
-- Cámara con función de QR para las películas y/o entradas.
-- Mapa (que, si bien se estuvo trabajando en la implementación de este recurso nativo, no se alcanzó a concretar).
+Funcionalidades principales desarrolladas:
+✔ Navegación entre pantallas con Navigation Compose
+✔ Registro de usuario → conectado a API propia (NestJS + Render)
+✔ Inicio de sesión real (JWT, validaciones, errores HTTP)
+✔ Resumen de datos ingresados
+✔ Listado de películas en Home
+✔ Modo oscuro persistente con DataStore
+✔ Cámara con QR Scanner
+✔ Se comenzó la implementación del mapa (pero no se alcanzó a finalizar)
+
+Además, se realizaron tests unitarios sobre la lógica de validación de usuario y ViewModels para cumplir con la rúbrica.
 
 
 
 ## 2. Requisitos y ejecución
 
-Tener Android Studio con Kotlin, Jetpack Compose y disponer de conexión a internet. 
+### Requisitos
+- Android Studio Ladybug+
+- Kotlin
+- Jetpack Compose
+- Conexión a internet (la app depende de la API en Render)
 
-Instalación:
-Abrir el proyecto en Android Studio y clonar el repositorio. Luego presionar el botón de play y listo!
+### Cómo ejecutarlo
+
+1. Clonar el repositorio:
+https://github.com/Bquirozyanez/CinePlus2-Test-OFICIAL.git
+2. Abrir el proyecto en Android Studio
+3. Presionar ▶ Run
+4. La app se conectará automáticamente al backend en Render (Este debe estar ejecutandose previamente en Render)
 
 
 
@@ -46,112 +68,130 @@ Abrir el proyecto en Android Studio y clonar el repositorio. Luego presionar el 
 app/src/main/java/com/example/cineplus/
 │
 ├── data/ 
-│ ├── remote/ 
-│ │ ├── dto/ 
-│ │ │ ├── LoginRequest.kt
-│ │ │ ├── LoginResponse.kt
-│ │ │ ├── RegisterRequest.kt
-│ │ │ └── RegisterResponse.kt
-│ │ ├── ApiService.kt 
-│ │ ├── RetrofitClient.kt 
-│ │ └── DarkModeDataStore.kt 
-│ └── model/ 
+│   ├── remote/ 
+│   │   ├── dto/ (modelos usados por la API)
+│   │   │   ├── LoginRequest.kt
+│   │   │   ├── LoginResponse.kt
+│   │   │   ├── RegisterRequest.kt
+│   │   │   └── RegisterResponse.kt
+│   │   ├── ApiService.kt 
+│   │   ├── RetrofitClient.kt 
+│   │   └── DarkModeDataStore.kt 
+│   └── model/ 
 │
 ├── navigation/ 
-│ ├── AppNavigation.kt 
-│ ├── NavigationEvent.kt
-│ └── Screen.kt 
+│   ├── AppNavigation.kt 
+│   ├── NavigationEvent.kt
+│   └── Screen.kt 
 │
 ├── repository/ 
-│ └── AuthRepository.kt 
+│   └── AuthRepository.kt 
 │
 ├── ui/ 
-│ ├── screens/ 
-│ │ ├── HomeScreen.kt
-│ │ ├── ProfileScreen.kt
-│ │ ├── RegisterScreen.kt
-│ │ └── ResumenScreen.kt
-│ ├── state/
-│ │ └── UsuarioUiState.kt 
-│ ├── theme/
-│ │ ├── Color.kt
-│ │ ├── Theme.kt
-│ │ └── Type.kt
-│ └── utils/
-│ └── WindowSizeUtils.kt 
+│   ├── screens/ (todas las pantallas visibles)
+│   │   ├── HomeScreen.kt
+│   │   ├── ProfileScreen.kt
+│   │   ├── RegisterScreen.kt
+│   │   └── ResumenScreen.kt
+│   ├── state/
+│   │   └── UsuarioUiState.kt 
+│   ├── theme/
+│   │   ├── Color.kt
+│   │   ├── Theme.kt
+│   │   └── Type.kt
+│   └── utils/
+│       └── WindowSizeUtils.kt 
 │
 ├── viewmodel/ 
-│ ├── DarkModeViewModel.kt
-│ ├── LoginViewModel.kt
-│ ├── MainViewModel.kt
-│ ├── RegisterViewModel.kt
-│ └── UsuarioViewModel.kt
+│   ├── DarkModeViewModel.kt
+│   ├── LoginViewModel.kt
+│   ├── MainViewModel.kt
+│   ├── RegisterViewModel.kt
+│   └── UsuarioViewModel.kt
 │
-└── MainActivity.kt 
+└── MainActivity.kt
+
+### Flujo interno de datos
+Pantalla → ViewModel → Repository → API (Render) → Repository → ViewModel → UI
+
 
 
 ## 4. Funcionalidades
 
-Registro e inicio de sesión:
-- El usuario puede crear una cuenta con su nombre, correo y contraseña (mínimo 6 caracteres).
-- Luego puede iniciar sesión con esos mismos datos.
-- Ambas acciones se conectan a la API que valida la información.
+### Registro
+- Valida nombre, correo y contraseña.
+- Envía datos al endpoint /auth/register.
+- Maneja errores:
+    - contraseña corta
+    - email ya registrado
+    - campos vacíos
+- Navega al resumen si la API responde correctamente.
 
-Pantalla de resumen:
-- Después del registro, se muestra un resumen con los datos ingresados antes de pasar a la cartelera.
-- Sirve como una confirmación de que el registro fue exitoso.
+### Inicio de sesión
+- Envia email y password a /auth/login.
+- Guarda el token JWT.
+- Si es correcto → va a HomeScreen.
+- Si falla → se muestra error.
 
-Cartelera (Home):
-- Muestra una lista de películas con su imagen, título y duración.
+### Home / Cartelera
+- Películas mockeadas para la presentación.
+- Título, imagen y duración.
 
-Modo oscuro:
-- El usuario puede activar o desactivar el modo oscuro.
-- La app recuerda esta preferencia gracias al DataStore.
+### Modo oscuro
+- Guardado con DataStore → persiste incluso si se cierra la app.
 
-Recursos nativos: cámara y mapa:
-- Desde una de las pantallas, la app permite acceder a la cámara del dispositivo para el uso de Scanner QR.
-- El recurso nativo de mapa no alcanzó a ser implementado.
-
-Conexión con API externa:
-- Se usó Retrofit para comunicarse con la API de Xano, que maneja el registro e inicio de sesión.
-- Si la respuesta de la API es correcta, la app navega a la siguiente pantalla; si no, muestra un mensaje de error. 
+### Cámara (QR)
+- Implementada con CameraX.
+- Abre cámara y detecta códigos QR.
 
 
 
 ## 5. Endpoints
 
-La app se conecta con un backend creado en Xano, que maneja todo lo relacionado con los usuarios (registro, login y obtención de datos). Para esto se usa Retrofit, una librería que permite hacer solicitudes HTTP desde Android Studio.
+La app actualmente se conecta al backend desplegado en Render: **https://cineplus-api-oi1n.onrender.com/api/**
 
-Los principales endpoints usados en el proyecto son los siguientes:
+Endpoints reales usados:
 
-| Función | Método | Endpoint | Descripción |
-|----------|---------|-----------|--------------|
-| Registro de usuario | **POST** | `https://x8ki-letl-twmt.n7.xano.io/api:Rfm_61dW/auth/signup` | Envía los datos del usuario para crear una cuenta nueva. 
-| Inicio de sesión | **POST** | `https://x8ki-letl-twmt.n7.xano.io/api:Rfm_61dW/auth/login` | Valida los datos y devuelve un token si el login es correcto. 
-| Datos del usuario | **GET** | `https://x8ki-letl-twmt.n7.xano.io/api:Rfm_61dW/auth/me` | Obtiene la información del usuario que se loguea. 
+| Función  | Método   |    Endpoint    | Descripción |
+|----------|----------|----------------|--------------|
+| Registro | **POST** | /auth/register | Crea un usuario nuevo
+| Login    | **POST** | /auth/login    | Devuelve token JWT si las credenciales son correctas
+| Perfil   | **GET**  | /auth/profile  | Obtiene los datos del usuario usando el token
 
-En caso de error (por ejemplo, una contraseña muy corta o datos incorrectos), la API devuelve un código HTTP 400, que la app muestra en pantalla para que el usuario pueda corregirlo.
+Los errores se manejan desde Retrofit con .isSuccessful y códigos 400–500.
 
 
 
 ## 6. User flows
 
-El flujo de usuario de esta app consiste en:
-1) El usuario ingresa a la app.
-2) Pone su usuario y contraseña; si es primera vez que la usa, la app le dará error y tendrá que registrarse.
-3) La app lo lleva a la Screen de registro, donde indica su usuario, correo, contraseña y dirección.
-4) Se le muestra un resumen con sus credenciales y finalmente puede acceder al catálogo de películas en el HomeScreen.
-5) El usuario, ya en el HomeScreen (catálogo de películas), puede ver qué películas están disponibles junto con su duración.
+1.Usuario abre la app
+2. Ve pantalla de Login
+3. Si no tiene cuenta → va a Registro
+4. Ingreso de datos → aparece Resumen
+5. Luego pasa al HomeScreen con la cartelera
+6. Desde ahí puede activar modo oscuro y usar la cámara
 
 
 
-## 7. Referencias
-Este punto no iba en la rúbrica, pero quise integrarlo. Aquí le anexo los sitios que usé de referencias y herramientas:
-1) OpenCompose
-2) Developer.Android
-3) YouTube para buscar tutoriales (canal de MoureDev entre otros)
-4) IA a modo de apoyo (Gemini integrado en Android Studio y ChatGPT para resolver dudas sobre sintaxis y sobre cómo integrar algunos componentes).
-5) AVA Blackboard para ver el material de estudio y seguir las guías que envió.
+## 7. Tests unitarios
+
+Realizamos 7 tests unitarios usando JUnit.
+Se trabajaron principalmente sobre:
+- *UsuarioValidator*
+- *RegisterViewModel*
+- *LoginViewModel*
+
+### Ejemplos de tests creados:
+
+1. Validar que el nombre no sea vacío
+2. Validar formato correcto del correo
+3. Contraseña con mínimo 6 caracteres
+4. Registro fallido si hay campos vacíos
+5. Registro exitoso con datos válidos
+6. Login fallido si la API devuelve error
+7. Login exitoso si la API entrega token
+
+Todos los tests corrieron correctamente en Android Studio.
 
 
 
