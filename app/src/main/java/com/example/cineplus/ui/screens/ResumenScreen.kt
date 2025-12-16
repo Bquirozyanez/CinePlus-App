@@ -22,7 +22,7 @@ fun ResumenScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
-    // ✅ Cargar desde DataStore (sin precargar en Profile/Register)
+    
     LaunchedEffect(Unit) {
         viewModel.cargarUsuario()
     }

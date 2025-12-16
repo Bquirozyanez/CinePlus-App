@@ -77,7 +77,7 @@ fun ModificarScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            // ✅ Mensaje animado
+            
             AnimatedVisibility(
                 visible = showMessage,
                 enter = slideInVertically { it / 2 } + fadeIn(),
@@ -157,7 +157,7 @@ fun ModificarScreen(
 
                     Button(
                         onClick = {
-                            // ✅ NO guarda nada. Solo feedback visual.
+                           
                             showMessage = true
                         },
                         modifier = Modifier
@@ -166,6 +166,24 @@ fun ModificarScreen(
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text("Guardar cambios", fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.cerrarSesion()
+                            navController.navigate("profile") {
+                                popUpTo(0)
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F))
+                    ) {
+                        Text("Cerrar sesión", fontWeight = FontWeight.Bold, color = Color.White)
                     }
 
                     // Apagar el mensaje después de 1.5s

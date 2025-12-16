@@ -130,7 +130,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        // ✅ Icono usuario (lleva a ModificarScreen)
+                       
                         IconButton(onClick = { navController.navigate("modificar") }) {
                             Icon(
                                 imageVector = Icons.Filled.Person,

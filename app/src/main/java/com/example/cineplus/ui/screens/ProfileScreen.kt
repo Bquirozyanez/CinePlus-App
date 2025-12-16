@@ -45,7 +45,7 @@ private fun LoginContent(
     val isSuccess by loginViewModel.isSuccess.collectAsState()
     val error by loginViewModel.error.collectAsState()
 
-    // ✅ Si login es exitoso, (opcional) guarda SOLO email/pass en DataStore y navega
+    
     LaunchedEffect(isSuccess) {
         if (isSuccess == true) {
             // Si NO quieres guardar nada aquí, borra estas 2 líneas:

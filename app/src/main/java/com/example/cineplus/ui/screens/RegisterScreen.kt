@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,7 +30,7 @@ fun RegisterScreen(
     navController: NavController,
     usuarioViewModel: UsuarioViewModel
 ) {
-    // ✅ Estado local SOLO de este formulario (para que NO quede precargado al volver)
+   
     var nombre by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
@@ -42,7 +43,7 @@ fun RegisterScreen(
     val isSuccess by registerViewModel.isSuccess.collectAsState()
     val error by registerViewModel.error.collectAsState()
 
-    // ✅ si el registro fue exitoso, guardar en DataStore y luego navegar
+   
     LaunchedEffect(isSuccess) {
         if (isSuccess == true) {
             usuarioViewModel.guardarUsuario(
@@ -214,6 +215,17 @@ fun RegisterScreen(
                     }
                 }
             }
+        }
+
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.align(Alignment.TopStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Volver",
+                tint = Color(0xFF3F51B5)
+            )
         }
     }
 }

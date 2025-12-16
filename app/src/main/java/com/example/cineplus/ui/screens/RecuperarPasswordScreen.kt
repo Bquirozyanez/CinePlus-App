@@ -85,7 +85,7 @@ fun RecuperarPasswordScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            // ✅ Visual solamente (no llama API)
+                            
                             showMessage = true
                         },
                         modifier = Modifier

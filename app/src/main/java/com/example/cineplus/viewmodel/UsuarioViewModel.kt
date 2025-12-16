@@ -17,7 +17,7 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
     private val _user = MutableStateFlow(UserData("", "", ""))
     val user: StateFlow<UserData> = _user
 
-    // ✅ Registro: guarda todo
+   
     fun guardarUsuario(nombre: String, email: String, password: String) {
         viewModelScope.launch {
             dataStore.saveUser(nombre, email, password)
@@ -25,7 +25,7 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ✅ Login: guarda solo email + password, NO borra el nombre
+    
     fun guardarLogin(email: String, password: String) {
         viewModelScope.launch {
             dataStore.saveLogin(email, password)
@@ -36,10 +36,18 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ✅ Cargar una vez desde DataStore
+ 
     fun cargarUsuario() {
         viewModelScope.launch {
             _user.value = dataStore.userFlow.first()
+        }
+    }
+
+   
+    fun cerrarSesion() {
+        viewModelScope.launch {
+            dataStore.saveUser("", "", "")
+            _user.value = UserData("", "", "")
         }
     }
 }
