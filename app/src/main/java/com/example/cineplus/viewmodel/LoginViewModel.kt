@@ -30,6 +30,12 @@ class LoginViewModel : ViewModel() {
             _error.value = null
             _isSuccess.value = null
 
+            if (!com.example.cineplus.UsuarioValidator.esCorreoValido(email)) {
+                _error.value = "Correo electrónico no válido"
+                _isLoading.value = false
+                return@launch
+            }
+
             val result = repository.login(email, password)
 
             result
