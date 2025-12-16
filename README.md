@@ -2,8 +2,7 @@
 
 Grupo 3
 Integrantes:
-Benjamín Quiroz
-Gabriel Cárdenas
+Benjamín Quiroz y Gabriel Cárdenas
 
 ## Nombre de la aplicación: CinePlus
 
