@@ -1,86 +1,45 @@
 package com.example.cineplus.viewmodel
 
-import androidx.lifecycle.ViewModel
-import com.example.cineplus.ui.state.UsuarioUiState
-import com.example.cineplus.ui.state.UsuarioErrores
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.cineplus.data.UserData
+import com.example.cineplus.data.UserDataStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class UsuarioViewModel : ViewModel() {
+class UsuarioViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _estado = MutableStateFlow(UsuarioUiState())
+    private val dataStore = UserDataStore(application)
 
-    val estado: StateFlow<UsuarioUiState> = _estado
+    private val _user = MutableStateFlow(UserData("", "", ""))
+    val user: StateFlow<UserData> = _user
 
-
-    fun onNombreChange(valor: String) {
-        _estado.update {
-            it.copy(
-                nombre = valor,
-                errores = it.errores.copy(nombre = null) // limpia error de nombre
-            )
+    // ✅ Registro: guarda todo
+    fun guardarUsuario(nombre: String, email: String, password: String) {
+        viewModelScope.launch {
+            dataStore.saveUser(nombre, email, password)
+            _user.value = UserData(nombre, email, password)
         }
     }
 
-    fun onCorreoChange(valor: String) {
-        _estado.update {
-            it.copy(
-                correo = valor,
-                errores = it.errores.copy(correo = null)
-            )
+    // ✅ Login: guarda solo email + password, NO borra el nombre
+    fun guardarLogin(email: String, password: String) {
+        viewModelScope.launch {
+            dataStore.saveLogin(email, password)
+
+            // mantener el nombre actual en memoria
+            val nombreActual = _user.value.name
+            _user.value = UserData(nombreActual, email, password)
         }
     }
 
-    fun onClaveChange(valor: String) {
-        _estado.update {
-            it.copy(
-                clave = valor,
-                errores = it.errores.copy(clave = null)
-            )
+    // ✅ Cargar una vez desde DataStore
+    fun cargarUsuario() {
+        viewModelScope.launch {
+            _user.value = dataStore.userFlow.first()
         }
-    }
-
-    fun onDireccionChange(valor: String) {
-        _estado.update {
-            it.copy(
-                direccion = valor,
-                errores = it.errores.copy(direccion = null)
-            )
-        }
-    }
-
-    fun onAceptarTerminosChange(valor: Boolean) {
-        _estado.update {
-            it.copy(aceptaTerminos = valor)
-        }
-    }
-
-
-    fun validarFormulario(): Boolean {
-        val estadoActual = _estado.value
-
-        val errores = UsuarioErrores(
-            nombre = if (estadoActual.nombre.isBlank())
-                "Campo obligatorio" else null,
-            correo = if (!estadoActual.correo.contains("@"))
-                "Correo inválido" else null,
-            clave = if (estadoActual.clave.length < 6)
-                "Debe tener al menos 6 caracteres" else null,
-            direccion = if (estadoActual.direccion.isBlank())
-                "Campo obligatorio" else null
-        )
-
-        val hayErrores = listOfNotNull(
-            errores.nombre,
-            errores.correo,
-            errores.clave,
-            errores.direccion
-        ).isNotEmpty()
-
-        // Actualizamos el estado con los errores calculados
-        _estado.update { it.copy(errores = errores) }
-
-        return !hayErrores
     }
 }

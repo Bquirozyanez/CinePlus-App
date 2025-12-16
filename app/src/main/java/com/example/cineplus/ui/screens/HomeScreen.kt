@@ -14,32 +14,39 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.cineplus.R
 import com.example.cineplus.viewmodel.DarkModeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     darkModeViewModel: DarkModeViewModel = viewModel()
 ) {
     val movies = listOf(
@@ -53,17 +60,16 @@ fun HomeScreen(
     val showMessage by darkModeViewModel.showMessage.collectAsState()
 
     val context = LocalContext.current
-
     var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
 
-    // launcher que abre la camara y devuelve una vista previa
+    // launcher cámara
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
         capturedImage = bitmap
     }
 
-    // launcher para pedir permiso de cámara
+    // launcher permiso cámara
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -90,20 +96,13 @@ fun HomeScreen(
 
     val isDarkMode = isDarkModeState ?: false
 
-    // fondo oscurito
     val backgroundColor by animateColorAsState(
-        targetValue = if (isDarkMode)
-            androidx.compose.ui.graphics.Color(0xFF202123)
-        else
-            androidx.compose.ui.graphics.Color(0xFFF5F5F7),
+        targetValue = if (isDarkMode) Color(0xFF202123) else Color(0xFFF5F5F7),
         label = "backgroundColor"
     )
 
     val cardColor by animateColorAsState(
-        targetValue = if (isDarkMode)
-            androidx.compose.ui.graphics.Color(0xFF2D2F34)
-        else
-            androidx.compose.ui.graphics.Color.White,
+        targetValue = if (isDarkMode) Color(0xFF2D2F34) else Color.White,
         label = "cardColor"
     )
 
@@ -119,13 +118,8 @@ fun HomeScreen(
                 title = {
                     Text(
                         text = "Cartelera",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = if (isDarkMode)
-                            androidx.compose.ui.graphics.Color.White
-                        else
-                            androidx.compose.ui.graphics.Color(0xFF222222),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                        color = if (isDarkMode) Color.White else Color(0xFF222222),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally)
@@ -136,17 +130,21 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
+                        // ✅ Icono usuario (lleva a ModificarScreen)
+                        IconButton(onClick = { navController.navigate("modificar") }) {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = "Perfil"
+                            )
+                        }
+
                         Text(
                             text = "QR",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = if (isDarkMode)
-                                androidx.compose.ui.graphics.Color.White
-                            else
-                                androidx.compose.ui.graphics.Color(0xFF222222)
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                            color = if (isDarkMode) Color.White else Color(0xFF222222)
                         )
 
+                        // Cámara
                         IconButton(
                             onClick = {
                                 val hasPermission = ContextCompat.checkSelfPermission(
@@ -172,10 +170,7 @@ fun HomeScreen(
                         Text(
                             text = if (isDarkMode) "🌙" else "☀️",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (isDarkMode)
-                                androidx.compose.ui.graphics.Color.White
-                            else
-                                androidx.compose.ui.graphics.Color(0xFF222222)
+                            color = if (isDarkMode) Color.White else Color(0xFF222222)
                         )
 
                         Spacer(modifier = Modifier.width(4.dp))
@@ -187,15 +182,7 @@ fun HomeScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = backgroundColor,
-                    titleContentColor = if (isDarkMode)
-                        androidx.compose.ui.graphics.Color.White
-                    else
-                        androidx.compose.ui.graphics.Color(0xFF222222),
-                    actionIconContentColor = if (isDarkMode)
-                        androidx.compose.ui.graphics.Color.White
-                    else
-                        androidx.compose.ui.graphics.Color(0xFF222222)
+                    containerColor = backgroundColor
                 )
             )
         },
@@ -209,17 +196,12 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            //texto estado pal modo oscuro
             Text(
                 text = modeLabel,
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (isDarkMode)
-                    androidx.compose.ui.graphics.Color(0xFFDDDDDD)
-                else
-                    androidx.compose.ui.graphics.Color(0xFF666666)
+                color = if (isDarkMode) Color(0xFFDDDDDD) else Color(0xFF666666)
             )
 
-            //feedback animado
             AnimatedVisibility(
                 visible = showMessage,
                 enter = slideInVertically { fullHeight -> fullHeight / 2 } + fadeIn(),
@@ -246,7 +228,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar foto capturada (si existe)
             capturedImage?.let { bitmap ->
                 Image(
                     bitmap = bitmap.asImageBitmap(),
@@ -259,14 +240,44 @@ fun HomeScreen(
                 )
             }
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(movies) { movie ->
                     Cartelera(
                         movie = movie,
                         cardColor = cardColor,
-                        isDarkMode = isDarkMode
+                        isDarkMode = isDarkMode,
+                        onClick = {
+                            when (movie.title) {
+                                "Creed" -> navController.navigate("creed")
+                                "Kimetsu no Yaiba" -> navController.navigate("kimetsu")
+                                "Shrek" -> navController.navigate("shrek")
+                                "4 Fantásticos" -> navController.navigate("fantastic4")
+                            }
+                        }
+                    )
+                }
+
+                // ✅ Footer “Conócenos”
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Divider(
+                        thickness = 1.dp,
+                        color = Color(0xFF2C2C2C)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Conócenos",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isDarkMode) Color(0xFFBFD0FF) else Color(0xFF2C2C2C),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("conocenos") }
+                            .padding(vertical = 10.dp)
                     )
                 }
             }
@@ -283,16 +294,15 @@ data class Movie(
 @Composable
 fun Cartelera(
     movie: Movie,
-    cardColor: androidx.compose.ui.graphics.Color,
-    isDarkMode: Boolean
+    cardColor: Color,
+    isDarkMode: Boolean,
+    onClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = cardColor
-        )
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Row(
             modifier = Modifier
@@ -310,33 +320,30 @@ fun Cartelera(
                     painter = painterResource(id = movie.posterRes),
                     contentDescription = "Póster de ${movie.title}",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { onClick() }
                 )
             }
 
             Spacer(Modifier.width(16.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = movie.title,
                     style = MaterialTheme.typography.titleLarge,
-                    color = if (isDarkMode)
-                        androidx.compose.ui.graphics.Color.White
-                    else
-                        androidx.compose.ui.graphics.Color(0xFF1C1B1F),
+                    color = if (isDarkMode) Color.White else Color(0xFF1C1B1F),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.clickable { onClick() }
                 )
+
                 Spacer(Modifier.height(8.dp))
+
                 Text(
                     text = "Duración: ${movie.duration}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isDarkMode)
-                        androidx.compose.ui.graphics.Color(0xFFCCCCCC)
-                    else
-                        androidx.compose.ui.graphics.Color(0xFF444444)
+                    color = if (isDarkMode) Color(0xFFCCCCCC) else Color(0xFF444444)
                 )
             }
         }
@@ -346,6 +353,5 @@ fun Cartelera(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(navController = rememberNavController())
 }
-

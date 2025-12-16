@@ -7,7 +7,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-//datasotre
 private val Context.dataStore by preferencesDataStore(name = "cineplus_prefs")
 
 class DarkModeDataStore(private val context: Context) {
@@ -16,10 +15,11 @@ class DarkModeDataStore(private val context: Context) {
         private val DARK_MODE_KEY = booleanPreferencesKey("dark_mode_enabled")
     }
 
-    val darkModeFlow: Flow<Boolean> = context.dataStore.data
-        .map { prefs -> prefs[DARK_MODE_KEY] ?: false }
+    val darkModeFlow: Flow<Boolean> =
+        context.dataStore.data.map { prefs ->
+            prefs[DARK_MODE_KEY] ?: false
+        }
 
-    // guarda el modo oscuro
     suspend fun saveDarkMode(enabled: Boolean) {
         context.dataStore.edit { prefs ->
             prefs[DARK_MODE_KEY] = enabled

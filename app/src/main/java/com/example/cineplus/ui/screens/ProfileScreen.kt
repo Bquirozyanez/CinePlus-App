@@ -21,15 +21,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.cineplus.viewmodel.LoginViewModel
+import com.example.cineplus.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun ProfileScreen(navController: NavController? = null) {
-    LoginContent(navController)
+fun ProfileScreen(
+    navController: NavController,
+    usuarioViewModel: UsuarioViewModel
+) {
+    LoginContent(navController = navController, usuarioViewModel = usuarioViewModel)
 }
 
 @Composable
-private fun LoginContent(navController: NavController?) {
+private fun LoginContent(
+    navController: NavController,
+    usuarioViewModel: UsuarioViewModel
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -38,12 +45,14 @@ private fun LoginContent(navController: NavController?) {
     val isSuccess by loginViewModel.isSuccess.collectAsState()
     val error by loginViewModel.error.collectAsState()
 
-    // Efecto: si login es exitoso, navegar tras un breve retraso
+    // ✅ Si login es exitoso, (opcional) guarda SOLO email/pass en DataStore y navega
     LaunchedEffect(isSuccess) {
         if (isSuccess == true) {
+            // Si NO quieres guardar nada aquí, borra estas 2 líneas:
+            usuarioViewModel.guardarLogin(email = username.trim(), password = password)
+
             delay(1000)
-            // Puedes cambiar "home" por la ruta que quieras
-            navController?.navigate("home")
+            navController.navigate("home")
             loginViewModel.resetState()
         }
     }
@@ -155,7 +164,7 @@ private fun LoginContent(navController: NavController?) {
             Button(
                 onClick = {
                     if (username.isNotBlank() && password.isNotBlank()) {
-                        loginViewModel.login(username, password)
+                        loginViewModel.login(username.trim(), password)
                     }
                 },
                 modifier = Modifier
@@ -206,10 +215,20 @@ private fun LoginContent(navController: NavController?) {
 
             Spacer(Modifier.height(12.dp))
 
-            // registrarse (lleva a RegisterScreen)
-            TextButton(onClick = { navController?.navigate("registro") }) {
+            // registrarse
+            TextButton(onClick = { navController.navigate("registro") }) {
                 Text(
                     text = "¿No tienes cuenta? Registrarse",
+                    color = Color(0xFF4353FF),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // ✅ recuperar contraseña (NUEVO)
+            TextButton(onClick = { navController.navigate("recuperar") }) {
+                Text(
+                    text = "¿Olvidaste la contraseña? Recuperar",
                     color = Color(0xFF4353FF),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
@@ -223,5 +242,6 @@ private fun LoginContent(navController: NavController?) {
 @Composable
 private fun ProfileScreenPreview() {
     val navController = rememberNavController()
-    ProfileScreen(navController)
+    val fakeUsuarioVm: UsuarioViewModel = viewModel()
+    ProfileScreen(navController = navController, usuarioViewModel = fakeUsuarioVm)
 }

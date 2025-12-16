@@ -17,28 +17,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.cineplus.viewmodel.UsuarioViewModel
 import com.example.cineplus.viewmodel.RegisterViewModel
+import com.example.cineplus.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: UsuarioViewModel
+    usuarioViewModel: UsuarioViewModel
 ) {
-    val estado by viewModel.estado.collectAsState()
+    // ✅ Estado local SOLO de este formulario (para que NO quede precargado al volver)
+    var nombre by remember { mutableStateOf("") }
+    var correo by remember { mutableStateOf("") }
+    var clave by remember { mutableStateOf("") }
+    var direccion by remember { mutableStateOf("") }
+    var aceptaTerminos by remember { mutableStateOf(false) }
 
-    //viewModel para conectarse con la API
-    val registerViewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    // ViewModel para conectarse con la API
+    val registerViewModel: RegisterViewModel = viewModel()
     val isLoading by registerViewModel.isLoading.collectAsState()
     val isSuccess by registerViewModel.isSuccess.collectAsState()
     val error by registerViewModel.error.collectAsState()
 
-    //si el registro fue exitoso, navegar tras un breve retraso
+    // ✅ si el registro fue exitoso, guardar en DataStore y luego navegar
     LaunchedEffect(isSuccess) {
         if (isSuccess == true) {
+            usuarioViewModel.guardarUsuario(
+                nombre = nombre.trim(),
+                email = correo.trim(),
+                password = clave
+            )
             delay(1500)
             navController.navigate("resumen")
             registerViewModel.resetState()
@@ -94,68 +105,40 @@ fun RegisterScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Nombre
+
                     OutlinedTextField(
-                        value = estado.nombre,
-                        onValueChange = viewModel::onNombreChange,
+                        value = nombre,
+                        onValueChange = { nombre = it },
                         label = { Text("Nombre", color = Color(0xFF3F51B5)) },
-                        isError = estado.errores.nombre != null,
-                        supportingText = {
-                            estado.errores.nombre?.let {
-                                Text(text = it, color = MaterialTheme.colorScheme.error)
-                            }
-                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Correo
                     OutlinedTextField(
-                        value = estado.correo,
-                        onValueChange = viewModel::onCorreoChange,
+                        value = correo,
+                        onValueChange = { correo = it },
                         label = { Text("Correo electrónico", color = Color(0xFF3F51B5)) },
-                        isError = estado.errores.correo != null,
-                        supportingText = {
-                            estado.errores.correo?.let {
-                                Text(text = it, color = MaterialTheme.colorScheme.error)
-                            }
-                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Contraseña
                     OutlinedTextField(
-                        value = estado.clave,
-                        onValueChange = viewModel::onClaveChange,
+                        value = clave,
+                        onValueChange = { clave = it },
                         label = { Text("Contraseña", color = Color(0xFF3F51B5)) },
                         visualTransformation = PasswordVisualTransformation(),
-                        isError = estado.errores.clave != null,
-                        supportingText = {
-                            estado.errores.clave?.let {
-                                Text(text = it, color = MaterialTheme.colorScheme.error)
-                            }
-                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Dirección
                     OutlinedTextField(
-                        value = estado.direccion,
-                        onValueChange = viewModel::onDireccionChange,
+                        value = direccion,
+                        onValueChange = { direccion = it },
                         label = { Text("Dirección", color = Color(0xFF3F51B5)) },
-                        isError = estado.errores.direccion != null,
-                        supportingText = {
-                            estado.errores.direccion?.let {
-                                Text(text = it, color = MaterialTheme.colorScheme.error)
-                            }
-                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    //checkbox
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
-                            checked = estado.aceptaTerminos,
-                            onCheckedChange = viewModel::onAceptarTerminosChange
+                            checked = aceptaTerminos,
+                            onCheckedChange = { aceptaTerminos = it }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -164,14 +147,23 @@ fun RegisterScreen(
                         )
                     }
 
-                    // botomn Registrar (con conexion a la API)
                     Button(
                         onClick = {
-                            if (viewModel.validarFormulario()) {
+                            val n = nombre.trim()
+                            val c = correo.trim()
+
+                            // validación simple (puedes endurecerla si quieres)
+                            val ok = n.isNotBlank() &&
+                                    c.contains("@") &&
+                                    clave.length >= 6 &&
+                                    direccion.isNotBlank() &&
+                                    aceptaTerminos
+
+                            if (ok) {
                                 registerViewModel.register(
-                                    email = estado.correo,
-                                    password = estado.clave,
-                                    nombre = estado.nombre
+                                    email = c,
+                                    password = clave,
+                                    nombre = n
                                 )
                             }
                         },
@@ -212,7 +204,6 @@ fun RegisterScreen(
                         }
                     }
 
-                    //mostrar error si ocurre
                     error?.let {
                         Text(
                             text = it,
@@ -231,6 +222,6 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreenPreview() {
     val navController = rememberNavController()
-    val fakeVm = UsuarioViewModel() // solo para preview
-    RegisterScreen(navController = navController, viewModel = fakeVm)
+    val fakeUsuarioVm: UsuarioViewModel = viewModel()
+    RegisterScreen(navController = navController, usuarioViewModel = fakeUsuarioVm)
 }

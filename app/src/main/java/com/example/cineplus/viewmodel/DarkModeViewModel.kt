@@ -14,11 +14,11 @@ class DarkModeViewModel(application: Application) : AndroidViewModel(application
 
     private val dataStore = DarkModeDataStore(application)
 
-    //(true/false o null mientras carga)
+    // true / false o null mientras carga
     private val _isDarkMode = MutableStateFlow<Boolean?>(null)
     val isDarkMode: StateFlow<Boolean?> = _isDarkMode
 
-    //muestra el mensaje de feedback
+    // muestra el mensaje de feedback
     private val _showMessage = MutableStateFlow(false)
     val showMessage: StateFlow<Boolean> = _showMessage
 
@@ -26,7 +26,7 @@ class DarkModeViewModel(application: Application) : AndroidViewModel(application
         loadState()
     }
 
-    //carga el valor guardado de DataStore
+    // carga el valor guardado desde DataStore
     private fun loadState() {
         viewModelScope.launch {
             val saved = dataStore.darkModeFlow.first()
@@ -34,19 +34,15 @@ class DarkModeViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    //alternar y guardar el modo oscuro
+    // alternar y guardar el modo oscuro
     fun toggleDarkMode() {
         viewModelScope.launch {
             val current = _isDarkMode.value ?: false
             val new = !current
 
-            // Guardar en DataStore
             dataStore.saveDarkMode(new)
-
-            // Actualizar estado
             _isDarkMode.value = new
 
-            // Mostrar feedback animado por 1.5 segundos
             _showMessage.value = true
             delay(1500)
             _showMessage.value = false
